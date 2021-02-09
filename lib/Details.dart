@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:memeapp/Generatedmeme.dart';
 import 'package:dio/dio.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(new MaterialApp(
@@ -33,66 +34,86 @@ class _DetaiState extends State<Detai> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          children: [
-            if (_isloading)
+        child: SingleChildScrollView(
+          child: Column(
+
+            children: [
+              if (_isloading)
+                Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: Card(
+                    margin: EdgeInsets.all(15.0),
+                    child: CachedNetworkImage(
+                      imageUrl: imageurl,
+                      height: 250,
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
+                ),
+              Visibility(
+                visible: visible,
+                child: Padding(
+
+                  padding: const EdgeInsets.all(28.0),
+                  child: Card(
+margin: EdgeInsets.all(20.0),
+                    child: CachedNetworkImage(
+                      imageUrl: this.widget.url,
+                      height: 250,
+                      placeholder: (context, url) =>
+                          Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ),
+                ),
+              ),
               Padding(
-                padding: const EdgeInsets.all(28.0),
-                child: Card(
-                  child: CachedNetworkImage(
-                    imageUrl: imageurl,
-                    height: 250,
-                    placeholder: (context, url) =>
-                        Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: text1,
+                  style: TextStyle(),
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "please enter first text"),
                 ),
               ),
-            Visibility(
-              visible: visible,
-              child: Padding(
-
-                padding: const EdgeInsets.all(28.0),
-                child: Card(
-
-                  child: CachedNetworkImage(
-                    imageUrl: this.widget.url,
-                    height: 250,
-                    placeholder: (context, url) =>
-                        Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: text2,
+                  style: TextStyle(),
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "please enter second  text"),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: text1,
-                style: TextStyle(),
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "please enter first text"),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: text2,
-                style: TextStyle(),
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "please enter second  text"),
-              ),
-            ),
 
-            FlatButton(
-              onPressed: () => {generatememe(this.widget.id)},
-              child: Text("click to generate meme"),
-              color: Colors.redAccent,
-              textColor: Colors.white,
-            )
-          ],
+              FlatButton(
+                onPressed: () => {generatememe(this.widget.id)},
+                child: Text("click to generate meme"),
+                color: Colors.redAccent,
+                textColor: Colors.white,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    FlatButton(onPressed: ()=>{
+
+                    }, child: Text("View"),color: Colors.green,textColor: Colors.white,),
+                    FlatButton(onPressed: ()=>{
+
+                    launched(imageurl)
+                    }, child: Text("Share"),color: Colors.deepPurpleAccent,textColor: Colors.white),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -118,5 +139,13 @@ class _DetaiState extends State<Detai> {
           Generatememe.fromJson(json.decode(response.toString())).data;
       imageurl = _generatememe.url.toString();
     });
+  }
+
+  launched(String imageurl) async {
+    if (await canLaunch(imageurl)) {
+    await launch(imageurl);
+    } else {
+    throw 'Could not launch $imageurl';
+    }
   }
 }
