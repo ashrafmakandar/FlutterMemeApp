@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:memeapp/Generatedmeme.dart';
 import 'package:dio/dio.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:share/share.dart';
 void main() {
   runApp(new MaterialApp(
     home: Detai(),
@@ -32,6 +32,7 @@ class _DetaiState extends State<Detai> {
 
   @override
   Widget build(BuildContext context) {
+    final RenderBox box = context.findRenderObject();
     return Scaffold(
       body: Container(
         child: SingleChildScrollView(
@@ -103,6 +104,12 @@ margin: EdgeInsets.all(20.0),
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     FlatButton(onPressed: ()=>{
+
+              Share.share(imageurl,
+              subject:" subject",
+              sharePositionOrigin:
+              box.localToGlobal(Offset.zero) &
+              box.size)
 
                     }, child: Text("View"),color: Colors.green,textColor: Colors.white,),
                     FlatButton(onPressed: ()=>{
