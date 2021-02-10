@@ -7,6 +7,8 @@ import 'package:memeapp/Generatedmeme.dart';
 import 'package:dio/dio.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
+import 'package:flutter_android_downloader/flutter_android_downloader.dart';
+
 void main() {
   runApp(new MaterialApp(
     home: Detai(),
@@ -37,7 +39,6 @@ class _DetaiState extends State<Detai> {
       body: Container(
         child: SingleChildScrollView(
           child: Column(
-
             children: [
               if (_isloading)
                 Padding(
@@ -56,10 +57,9 @@ class _DetaiState extends State<Detai> {
               Visibility(
                 visible: visible,
                 child: Padding(
-
                   padding: const EdgeInsets.all(28.0),
                   child: Card(
-margin: EdgeInsets.all(20.0),
+                    margin: EdgeInsets.all(20.0),
                     child: CachedNetworkImage(
                       imageUrl: this.widget.url,
                       height: 250,
@@ -76,24 +76,27 @@ margin: EdgeInsets.all(20.0),
                   controller: text1,
                   style: TextStyle(),
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "please enter first text"),
+                    
+                      border: OutlineInputBorder(
+
+                      ),
+                      labelText: "Please Enter First Text"),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   controller: text2,
-                  style: TextStyle(),
+                  style: TextStyle(
+                  ),
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: "please enter second  text"),
+                      labelText: "Please Enter Second  Text"),
                 ),
               ),
-
               FlatButton(
                 onPressed: () => {generatememe(this.widget.id)},
-                child: Text("click to generate meme"),
+                child: Text("Click to Generate Meme"),
                 color: Colors.redAccent,
                 textColor: Colors.white,
               ),
@@ -103,19 +106,23 @@ margin: EdgeInsets.all(20.0),
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    FlatButton(onPressed: ()=>{
+                    FlatButton(
+                      onPressed: () => {
+                        Share.share(imageurl,
+                            subject: " subject",
+                            sharePositionOrigin:
+                                box.localToGlobal(Offset.zero) & box.size)
+                      },
+                      child: Text("Share"),
+                      color: Colors.green,
+                      textColor: Colors.white,
+                    ),
+                    FlatButton(
+                        onPressed: () => {launched(imageurl)},
+                        child: Text("View"),
+                        color: Colors.deepPurpleAccent,
+                        textColor: Colors.white),
 
-              Share.share(imageurl,
-              subject:" subject",
-              sharePositionOrigin:
-              box.localToGlobal(Offset.zero) &
-              box.size)
-
-                    }, child: Text("View"),color: Colors.green,textColor: Colors.white,),
-                    FlatButton(onPressed: ()=>{
-
-                    launched(imageurl)
-                    }, child: Text("Share"),color: Colors.deepPurpleAccent,textColor: Colors.white),
                   ],
                 ),
               )
@@ -150,9 +157,10 @@ margin: EdgeInsets.all(20.0),
 
   launched(String imageurl) async {
     if (await canLaunch(imageurl)) {
-    await launch(imageurl);
+      await launch(imageurl);
     } else {
-    throw 'Could not launch $imageurl';
+      throw 'Could not launch $imageurl';
     }
   }
+
 }

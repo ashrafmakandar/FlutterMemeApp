@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:memeapp/Details.dart';
 import 'package:memeapp/Meme.dart';
+import 'package:memeapp/Splash.dart';
 import 'package:octo_image/octo_image.dart';
 void main() {
   runApp(new MaterialApp(
-    home: Home(),
+    home: Splash(),
   ));
 }
 
