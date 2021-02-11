@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:memeapp/Generatedmeme.dart';
 import 'package:dio/dio.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_android_downloader/flutter_android_downloader.dart';
 
 void main() {
   runApp(new MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: Detai(),
   ));
 }
@@ -31,6 +33,7 @@ class _DetaiState extends State<Detai> {
   bool visible = true;
   Data _generatememe;
   String imageurl;
+  bool ismemegenerated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +47,13 @@ class _DetaiState extends State<Detai> {
                 Padding(
                   padding: const EdgeInsets.all(28.0),
                   child: Card(
-                    margin: EdgeInsets.all(15.0),
+                    elevation: 10.0,
+                    margin: EdgeInsets.fromLTRB(10, 50, 10, 10),
                     child: CachedNetworkImage(
                       imageUrl: imageurl,
                       height: 250,
+                      width: 300,
+                      fit: BoxFit.fill,
                       placeholder: (context, url) =>
                           Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) => Icon(Icons.error),
@@ -59,10 +65,13 @@ class _DetaiState extends State<Detai> {
                 child: Padding(
                   padding: const EdgeInsets.all(28.0),
                   child: Card(
-                    margin: EdgeInsets.all(20.0),
+                    elevation: 10.0,
+                    margin: EdgeInsets.fromLTRB(10, 50, 10, 10),
                     child: CachedNetworkImage(
                       imageUrl: this.widget.url,
                       height: 250,
+                      width: 300,
+                      fit: BoxFit.fill,
                       placeholder: (context, url) =>
                           Center(child: CircularProgressIndicator()),
                       errorWidget: (context, url, error) => Icon(Icons.error),
@@ -70,33 +79,41 @@ class _DetaiState extends State<Detai> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 5,
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   controller: text1,
                   style: TextStyle(),
                   decoration: InputDecoration(
-                    
-                      border: OutlineInputBorder(
-
-                      ),
+                      border: OutlineInputBorder(),
                       labelText: "Please Enter First Text"),
                 ),
+              ),
+              SizedBox(
+                height: 5,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   controller: text2,
-                  style: TextStyle(
-                  ),
+                  style: TextStyle(),
                   decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: "Please Enter Second  Text"),
                 ),
               ),
+              SizedBox(
+                height: 5,
+              ),
               FlatButton(
                 onPressed: () => {generatememe(this.widget.id)},
-                child: Text("Click to Generate Meme"),
+                child: Text(
+                  "Click to Generate Meme",
+                  style: TextStyle(fontFamily: 'Raleway-Bold'),
+                ),
                 color: Colors.redAccent,
                 textColor: Colors.white,
               ),
@@ -108,21 +125,44 @@ class _DetaiState extends State<Detai> {
                   children: [
                     FlatButton(
                       onPressed: () => {
-                        Share.share(imageurl,
-                            subject: " subject",
-                            sharePositionOrigin:
-                                box.localToGlobal(Offset.zero) & box.size)
+                        ismemegenerated
+                            ? Share.share(imageurl,
+                                subject: " subject",
+                                sharePositionOrigin:
+                                    box.localToGlobal(Offset.zero) & box.size)
+                            : Fluttertoast.showToast(
+                                msg: "Please Generate Meme First",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 10,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0)
                       },
-                      child: Text("Share"),
+                      child: Text(
+                        "Share",
+                        style: TextStyle(fontFamily: 'Raleway-Bold'),
+                      ),
                       color: Colors.green,
                       textColor: Colors.white,
                     ),
                     FlatButton(
-                        onPressed: () => {launched(imageurl)},
-                        child: Text("View"),
+                        onPressed: () => {
+                              ismemegenerated
+                                  ? launched(imageurl)
+                                  : Fluttertoast.showToast(
+                                      msg: "Please Generate Meme  First",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 10,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0)
+                            },
+                        child: Text("View",
+                            style: TextStyle(fontFamily: 'Raleway-Bold')),
                         color: Colors.deepPurpleAccent,
                         textColor: Colors.white),
-
                   ],
                 ),
               )
@@ -137,22 +177,34 @@ class _DetaiState extends State<Detai> {
     Response response;
     Dio dio = new Dio();
     var url = "https://api.imgflip.com/caption_image";
-    FormData formData = new FormData.fromMap({
-      "template_id": this.widget.id,
-      "username": "ashrafmakandar",
-      "password": "ashraf1234",
-      "text0": text1.text.toString(),
-      "text1": text2.text.toString()
-    });
-    response = await dio.post(url, data: formData);
-    print("daara" + response.data.toString());
-    setState(() {
-      _isloading = true;
-      visible = false;
-      _generatememe =
-          Generatememe.fromJson(json.decode(response.toString())).data;
-      imageurl = _generatememe.url.toString();
-    });
+    if (text1.text.toString().isEmpty || text2.text.toString().isEmpty) {
+      Fluttertoast.showToast(
+          msg: "Please fill the fields",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 10,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else {
+      FormData formData = new FormData.fromMap({
+        "template_id": this.widget.id,
+        "username": "ashrafmakandar",
+        "password": "ashraf1234",
+        "text0": text1.text.toString(),
+        "text1": text2.text.toString()
+      });
+      response = await dio.post(url, data: formData);
+      print("daara" + response.data.toString());
+      setState(() {
+        _isloading = true;
+        visible = false;
+        _generatememe =
+            Generatememe.fromJson(json.decode(response.toString())).data;
+        imageurl = _generatememe.url.toString();
+        ismemegenerated = true;
+      });
+    }
   }
 
   launched(String imageurl) async {
@@ -162,5 +214,4 @@ class _DetaiState extends State<Detai> {
       throw 'Could not launch $imageurl';
     }
   }
-
 }

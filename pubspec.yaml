@@ -36,10 +36,21 @@ dependencies:
   share: any
   animated_splash_screen: ^1.0.1+2
   flutter_android_downloader: ^0.0.2
+  fluttertoast: ^7.1.6
+  flutter_launcher_icons: ^0.8.0
+  shimmer: ^1.1.2
 
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+   image_path: "assets/launcher/logonew.png"
+   android: true
+   ios: false
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -55,8 +66,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
 
   assets:
-    - assets/images/p1.jpg
-    - assets/fonts/Cardo-Bold.ttf
+    - assets/images/logonew.png
+    - assets/launcher/logonew.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -70,10 +82,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+      - family: Raleway
+        fonts:
+          - asset: assets/fonts/Raleway-Bold.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

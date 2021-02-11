@@ -18,11 +18,11 @@ class _SplashState extends State<Splash> {
     return Scaffold(
       body: AnimatedSplashScreen(
           duration: 2000,
-          splash: Icons.ac_unit_sharp,
+          splash: 'assets/launcher/logonew.png',
           nextScreen: Home(),
           splashTransition: SplashTransition.fadeTransition,
           pageTransitionType: PageTransitionType.scale,
-          backgroundColor: Colors.green
+          backgroundColor: Colors.white
       )
       
     );

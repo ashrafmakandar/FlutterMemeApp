@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,9 +7,14 @@ import 'package:memeapp/Details.dart';
 import 'package:memeapp/Meme.dart';
 import 'package:memeapp/Splash.dart';
 import 'package:octo_image/octo_image.dart';
+
 void main() {
   runApp(new MaterialApp(
-    home: Splash(),
+    debugShowCheckedModeBanner: false,
+
+    home: Splash(
+
+    ),
   ));
 }
 
@@ -21,9 +24,9 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-
 class _HomeState extends State<Home> {
   List<Memes> _me;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,6 +36,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Container(
         child: FutureBuilder(
             future: getdata(),
@@ -44,10 +48,18 @@ class _HomeState extends State<Home> {
                       return InkWell(
                         onTap:()=> Navigator.push(context, MaterialPageRoute(builder: (BuildContext c)=>Detai(url:_me[index].url,id:_me[index].id))),
                         child: Card(
-                          child: CachedNetworkImage(
-                            imageUrl: _me[index].url,
-                            placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) => Icon(Icons.error),
+                          elevation: 15.0,
+                          margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                          child: Column(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: _me[index].url,
+                                fit: BoxFit.fill,
+                                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                              ),
+                              SizedBox(height: 2,)
+                            ],
                           ),
                         ),
                       );
